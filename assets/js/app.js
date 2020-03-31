@@ -47,7 +47,7 @@ const app = new Vue({
         },
         convert: () => {
             if(app.file == null) return Swal.fire('Error', 'File belum dipilih', 'error');
-            if(app.timezone == "" || app.timezone == null) return Swal.fire('Error', 'Timezone belum dipilih', 'error');
+            // if(app.timezone == "" || app.timezone == null) return Swal.fire('Error', 'Timezone belum dipilih', 'error');
             Papa.parse(app.file, {
                 header: true,
                 error: (err) => {
@@ -94,6 +94,7 @@ const app = new Vue({
             
             app.absens = absen_per_orang.map(apo => {
                 // console.log(apo)
+                const offset = new Date().getTimezoneOffset();
                 const data = {};
                 const pecahnama = apo.nama.split('-');
                 data.nama = pecahnama[0].trim();
@@ -103,7 +104,7 @@ const app = new Vue({
                 data.uk = groupname[1].trim();
                 data.groupname = apo.groupname;
                 data.datang = {
-                    waktu: moment.unix(apo.datang.unixservertime).add(parseInt(app.timezone), 'h').toDate(),
+                    waktu: moment.unix(apo.datang.unixservertime).add((0-(offset/60)), 'h').toDate(),
                     latitude: apo.datang['Responder Location Latitude'],
                     longitude: apo.datang['Responder Location Longitude'],
                     location: apo.datang['Responder Location Location'],
@@ -111,7 +112,7 @@ const app = new Vue({
                 };
                 if(apo.pulang) {
                     data.pulang = {
-                        waktu: moment.unix(apo.pulang.unixservertime).add(parseInt(app.timezone), 'h').toDate(),
+                        waktu: moment.unix(apo.pulang.unixservertime).add((0-(offset/60)), 'h').toDate(),
                         latitude: apo.pulang['Responder Location Latitude'],
                         longitude: apo.pulang['Responder Location Longitude'],
                         latlong: apo.pulang['Responder Location Latitude'] + ', ' + apo.pulang['Responder Location Longitude'],
