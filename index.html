@@ -88,14 +88,6 @@
                 <p class="lead text-muted">Masukkan file attendance berformat csv dan klik tombol Convert!</p>
                 
                     <input type="file" class="tes" accept=".csv" name="myfile" @change="handleFile($event)" />
-                    <div class="form-group" style="margin-top: 10px;">
-                    <select class="form-control" v-model="timezone">
-                        <option value=null>-- Pilih Timezone --</option>
-                        <option value=7>+7</option>
-                        <option value=8>+8</option>
-                        <option value=9>+9</option>
-                      </select>
-                    </div>
                     <a href="#" class="btn btn-primary my-2" @click="convert">Convert</a>
                 
             </div>
