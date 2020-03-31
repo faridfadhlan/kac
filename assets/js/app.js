@@ -104,7 +104,7 @@ const app = new Vue({
                 data.uk = groupname[1].trim();
                 data.groupname = apo.groupname;
                 data.datang = {
-                    waktu: moment.unix(apo.datang.unixservertime).add((0-(offset/60)), 'h').toDate(),
+                    waktu: moment.unix(apo.datang.unixservertime).add((7-(offset/60)), 'h').toDate(),
                     latitude: apo.datang['Responder Location Latitude'],
                     longitude: apo.datang['Responder Location Longitude'],
                     location: apo.datang['Responder Location Location'],
@@ -112,7 +112,7 @@ const app = new Vue({
                 };
                 if(apo.pulang) {
                     data.pulang = {
-                        waktu: moment.unix(apo.pulang.unixservertime).add((0-(offset/60)), 'h').toDate(),
+                        waktu: moment.unix(apo.pulang.unixservertime).add((7-(offset/60)), 'h').toDate(),
                         latitude: apo.pulang['Responder Location Latitude'],
                         longitude: apo.pulang['Responder Location Longitude'],
                         latlong: apo.pulang['Responder Location Latitude'] + ', ' + apo.pulang['Responder Location Longitude'],
