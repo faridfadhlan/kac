@@ -79,7 +79,6 @@ const app = new Vue({
         },
         processConvert: () => {
             const unik = _.groupBy(app.inputKaizala, 'Responder Name');
-            console.log(unik)
             const absen_per_orang = Object.keys(unik).map(k => {
                 const absens = {
                     nama: k,
@@ -90,7 +89,7 @@ const app = new Vue({
                 return absens;
             });
 
-            console.log(absen_per_orang)
+            
 
             
             app.absens = absen_per_orang.map(apo => {
@@ -104,7 +103,7 @@ const app = new Vue({
                 data.uk = groupname[1].trim();
                 data.groupname = apo.groupname;
                 data.datang = {
-                    waktu: moment.unix(apo.datang.unixservertime).add(14, 'h').toDate(),
+                    waktu: moment.unix(apo.datang.unixservertime).add(parseInt(app.timezone), 'h').toDate(),
                     latitude: apo.datang['Responder Location Latitude'],
                     longitude: apo.datang['Responder Location Longitude'],
                     location: apo.datang['Responder Location Location'],
@@ -112,7 +111,7 @@ const app = new Vue({
                 };
                 if(apo.pulang) {
                     data.pulang = {
-                        waktu: moment.unix(apo.pulang.unixservertime).add(14, 'h').toDate(),
+                        waktu: moment.unix(apo.pulang.unixservertime).add(parseInt(app.timezone), 'h').toDate(),
                         latitude: apo.pulang['Responder Location Latitude'],
                         longitude: apo.pulang['Responder Location Longitude'],
                         latlong: apo.pulang['Responder Location Latitude'] + ', ' + apo.pulang['Responder Location Longitude'],
@@ -205,7 +204,6 @@ const app = new Vue({
 
             for(i in app.absens) {
                 const item = app.absens[i];
-                console.log(item)
                 if(item.pulang) {
                     worksheet.addRow([
                         item.nip,
@@ -256,39 +254,6 @@ const app = new Vue({
             .catch(function(error) {
                 console.log(error.message);
             });
-            // var ua = window.navigator.userAgent;
-            // var msie = ua.indexOf("MSIE "); 
-            // var tab_text="<table border='2px'><tr bgcolor='#87AFC6'>";
-            // var textRange; var j=0;
-            // tab = document.getElementById('tabel-absensi'); // id of table
-
-            // for(j = 0 ; j < tab.rows.length ; j++) 
-            // {     
-            //     tab_text=tab_text+tab.rows[j].innerHTML+"</tr>";
-            // }
-
-            // tab_text=tab_text+"</table>";
-            // tab_text= tab_text.replace(/<A[^>]*>|<\/A>/g, "");//remove if u want links in your table
-            // tab_text= tab_text.replace(/<img[^>]*>/gi,""); // remove if u want images in your table
-            // tab_text= tab_text.replace(/<input[^>]*>|<\/input>/gi, ""); // reomves input params
-
-            // var ua = window.navigator.userAgent;
-            // var msie = ua.indexOf("MSIE "); 
-            // const tab_text = '<table>' + $('#tabel-absensi').html() + '</table>';
-            // console.log(tab_text)
-
-            // if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./))      // If Internet Explorer
-            // {
-            //     txtArea1.document.open("txt/html","replace");
-            //     txtArea1.document.write(tab_text);
-            //     txtArea1.document.close();
-            //     txtArea1.focus(); 
-            //     sa=txtArea1.document.execCommand("SaveAs",true,"Say Thanks to Sumit.xls");
-            // }  
-            // else                 //other browser not tested on IE 11
-            //     sa = window.open('data:application/vnd.ms-excel,' + encodeURIComponent(tab_text));  
-
-            // return (sa);
         }
     }
 })
