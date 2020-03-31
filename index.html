@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v3.8.6">
+    <title>Album example · Bootstrap</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.4/examples/album/">
+
+    <!-- Bootstrap core CSS -->
+    <link rel ="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./assets/plugins/sweetalert2/dist/sweetalert2.min.css" >
+    <link rel ="stylesheet" href="/assets/css/style.css">
+
+
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+        .jumbotron {
+            padding-top: 3rem;
+            padding-bottom: 3rem;
+            margin-bottom: 0;
+            background-color: #fff;
+        }
+        @media (min-width: 768px) {
+            .jumbotron {
+                padding-top: 6rem;
+                padding-bottom: 6rem;
+            }
+        }
+
+        .jumbotron p:last-child {
+            margin-bottom: 0;
+        }
+
+        .jumbotron h1 {
+            font-weight: 300;
+        }
+
+        .jumbotron .container {
+            max-width: 40rem;
+        }
+
+        footer {
+            padding-top: 3rem;
+            padding-bottom: 3rem;
+        }
+
+        footer p {
+            margin-bottom: .25rem;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="navbar navbar-dark bg-dark shadow-sm">
+            <div class="container d-flex justify-content-between">
+                <a href="#" class="navbar-brand d-flex align-items-center">
+                    
+                    <strong>Kaizala Attendance Converter</strong>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main role="main" id="app">
+
+        <section class="jumbotron text-center">
+            <div class="container">
+                <h1>Kaizala Attendance Converter</h1>
+                <p class="lead text-muted">Masukkan file attendance dan klik tombol Convert!</p>
+                <p>
+                    <input type="file" class="tes" name="myfile" @change="handleFile($event)" />
+                    <a href="#" class="btn btn-primary my-2" @click="convert">Convert</a>
+                </p>
+            </div>
+        </section>
+        <!-- Modal -->
+        <div class="modal fade" id="tabel-absen" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="scoll-tree">
+                            <iframe id="txtArea1" style="display:none"></iframe>
+                        <table class="table tabel-absen" id="tabel-absensi" style="width:1400px; overflow:auto;">
+                            <thead>
+                                <tr>
+                                    <th scope="col" rowspan="2" width="100">NIP</th>
+                                    <th scope="col" rowspan="2" width="200">Nama</th>
+                                    <th scope="col" colspan="3" style="text-align: center;">Absen Datang</th>
+                                    <th scope="col" colspan="3" style="text-align: center;">Absen Pulang</th>
+                                </tr>
+                                <tr>
+                                    <th scope="col" width="150">Waktu</th>
+                                    <th scope="col" width="40">LatLong</th>
+                                    <th scope="col">Alamat</th>
+                                    <th scope="col" width="150">Waktu</th>
+                                    <th scope="col">Latlong</th>
+                                    <th scope="col">Alamat</th>
+                              </tr>
+                            </thead>
+                            <tbody v-for="absen in absens">
+                                <td>{{ absen.nip }}</td>
+                                <td>{{ absen.nama }}</td>
+                                <td>{{ absen.datang_waktu }}</td>
+                                <td>{{ absen.datang_latlong }}</td>
+                                <td>{{ absen.datang_location }}</td>
+                                <td>{{ absen.pulang_waktu }}</td>
+                                <td>{{ absen.pulang_latlong }}</td>
+                                <td>{{ absen.pulang_location }}</td>
+                            </tbody>
+                          </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" @click="writeExcel">Download Excel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="text-muted">
+        <div class="container">
+            <p>Kaizala Attendance Converter &copy; Badan Pusat Statistik Republik Indonesia</p>
+        </div>
+    </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.26.0/polyfill.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="./assets/plugins/lodash/lodash.min.js"></script>
+    <script src="./assets/plugins/moment/min/moment.min.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/xlsx/dist/shim.min.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="./assets/plugins/bootstrap-filestyle/bootstrap-filestyle.min.js"></script>
+    <script src="./assets/plugins/papaparse/papaparse.min.js"></script>
+    <script src="./assets/plugins/sweetalert2/dist/sweetalert2.min.js"></script>
+    <script src="./assets/plugins/exceljs/exceljs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="./assets/js/app.js"></script>
+    <script type="text/javascript">
+    $(document).ready(() => {
+        $(".tes").filestyle();
+    })
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,14 @@
+@media (min-width: 1200px) {
+    .modal-lg, .modal-xl {
+        max-width: 1100px;
+    }
+}
+
+.tabel-absen * {
+    font-size: 0.8rem;
+}
+
+.modal-body {
+    max-width: 100%;
+    overflow-x: auto;
+}
