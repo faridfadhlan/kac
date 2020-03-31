@@ -92,56 +92,6 @@
                 </p>
             </div>
         </section>
-        <!-- Modal -->
-        <div class="modal fade" id="tabel-absen" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="scoll-tree">
-                            <iframe id="txtArea1" style="display:none"></iframe>
-                        <table class="table tabel-absen" id="tabel-absensi" style="width:1400px; overflow:auto;">
-                            <thead>
-                                <tr>
-                                    <th scope="col" rowspan="2" width="100">NIP</th>
-                                    <th scope="col" rowspan="2" width="200">Nama</th>
-                                    <th scope="col" colspan="3" style="text-align: center;">Absen Datang</th>
-                                    <th scope="col" colspan="3" style="text-align: center;">Absen Pulang</th>
-                                </tr>
-                                <tr>
-                                    <th scope="col" width="150">Waktu</th>
-                                    <th scope="col" width="40">LatLong</th>
-                                    <th scope="col">Alamat</th>
-                                    <th scope="col" width="150">Waktu</th>
-                                    <th scope="col">Latlong</th>
-                                    <th scope="col">Alamat</th>
-                              </tr>
-                            </thead>
-                            <tbody v-for="absen in absens">
-                                <td>{{ absen.nip }}</td>
-                                <td>{{ absen.nama }}</td>
-                                <td>{{ absen.datang_waktu }}</td>
-                                <td>{{ absen.datang_latlong }}</td>
-                                <td>{{ absen.datang_location }}</td>
-                                <td>{{ absen.pulang_waktu }}</td>
-                                <td>{{ absen.pulang_latlong }}</td>
-                                <td>{{ absen.pulang_location }}</td>
-                            </tbody>
-                          </table>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" @click="writeExcel">Download Excel</button>
-                    </div>
-                </div>
-            </div>
-        </div>
 
     </main>
 
