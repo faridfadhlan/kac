@@ -4,7 +4,7 @@ const app = new Vue({
         file: null,
         inputKaizala: [],
         absens: [],
-        timezone: null,
+        timezone: "",
         headerText: {
             "responderName": {
                 id: 0,
@@ -47,7 +47,7 @@ const app = new Vue({
         },
         convert: () => {
             if(app.file == null) return Swal.fire('Error', 'File belum dipilih', 'error');
-            if(app.timezone == null) return Swal.fire('Error', 'Timezone belum dipilih', 'error');
+            if(app.timezone == "") return Swal.fire('Error', 'Timezone belum dipilih', 'error');
             Papa.parse(app.file, {
                 header: true,
                 error: (err) => {
