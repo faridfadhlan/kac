@@ -4,7 +4,7 @@ const app = new Vue({
         file: null,
         inputKaizala: [],
         absens: [],
-        timezone: 7,
+        timezone: null,
         headerText: {
             "responderName": {
                 id: 0,
@@ -47,6 +47,7 @@ const app = new Vue({
         },
         convert: () => {
             if(app.file == null) return Swal.fire('Error', 'File belum dipilih', 'error');
+            if(app.timezone == null) return Swal.fire('Error', 'Timezone belum dipilih', 'error');
             Papa.parse(app.file, {
                 header: true,
                 error: (err) => {
@@ -79,8 +80,10 @@ const app = new Vue({
         processConvert: () => {
             const unik = _.groupBy(app.inputKaizala, 'Responder Name');
             const absen_per_orang = Object.keys(unik).map(k => {
+                // console.log(unik[k][0])
                 const absens = {
                     nama: k,
+                    groupname: unik[k][0]['Group Name'],
                     datang: unik[k][0],
                     pulang: unik[k].length > 1 ? unik[k][unik[k].lenth-1] : false
                 }
@@ -89,13 +92,17 @@ const app = new Vue({
 
             
             app.absens = absen_per_orang.map(apo => {
+                // console.log(apo)
                 const data = {};
                 const pecahnama = apo.nama.split('-');
                 data.nama = pecahnama[0].trim();
                 data.nip = pecahnama[1].trim();
-                // console.log(moment.unix(apo.datang.unixservertime).format('YYYY-MM-DD HH:mm:ss'))
+                const groupname = apo.groupname.split('-');
+                data.kode_uk = groupname[0].trim();
+                data.uk = groupname[1].trim();
+                data.groupname = apo.groupname;
                 data.datang = {
-                    waktu: moment.unix(apo.datang.unixservertime).add(14, 'h').toDate(),
+                    waktu: moment.unix(apo.datang.unixservertime).add(parseInt(app.timezone) + 7, 'h').toDate(),
                     latitude: apo.datang['Responder Location Latitude'],
                     longitude: apo.datang['Responder Location Longitude'],
                     location: apo.datang['Responder Location Location'],
@@ -103,7 +110,7 @@ const app = new Vue({
                 };
                 if(apo.pulang) {
                     data.pulang = {
-                        waktu: moment.unix(apo.pulang.unixservertime).add(14, 'h').toDate(),
+                        waktu: moment.unix(apo.pulang.unixservertime).add(parseInt(app.timezone) + 7, 'h').toDate(),
                         latitude: apo.pulang['Responder Location Latitude'],
                         longitude: apo.pulang['Responder Location Longitude'],
                         latlong: apo.pulang['Responder Location Latitude'] + ', ' + apo.pulang['Responder Location Longitude'],
@@ -151,37 +158,43 @@ const app = new Vue({
             worksheet.getCell('B1').alignment = { vertical: 'center', horizontal: 'center' };
             worksheet.getCell('B1').font = { bold: true };
 
-            // kolom absen datang
-            worksheet.mergeCells('C1:E1');
-            worksheet.getCell('C1').value = 'Absen Datang';
+            //
+            worksheet.mergeCells('C1:C2');
+            worksheet.getCell('C1').value = 'Nama Group';
             worksheet.getCell('C1').alignment = { vertical: 'center', horizontal: 'center' };
             worksheet.getCell('C1').font = { bold: true };
 
+            // kolom absen datang
+            worksheet.mergeCells('D1:F1');
+            worksheet.getCell('D1').value = 'Absen Datang';
+            worksheet.getCell('D1').alignment = { vertical: 'center', horizontal: 'center' };
+            worksheet.getCell('D1').font = { bold: true };
+
             // kolom absen pulang
-            worksheet.mergeCells('F1:H1');
+            worksheet.mergeCells('G1:I1');
             worksheet.getCell('G1').value = 'Absen Pulang'
             worksheet.getCell('G1').alignment = { vertical: 'center', horizontal: 'center' };
             worksheet.getCell('G1').font = { bold: true };
 
-            worksheet.getCell('C2').value = 'Waktu';
-            worksheet.getCell('C2').alignment = { vertical: 'center', horizontal: 'center' };
-            worksheet.getCell('C2').font = { bold: true };
-            worksheet.getCell('D2').value = 'Latlong';
+            worksheet.getCell('D2').value = 'Tanggal';
             worksheet.getCell('D2').alignment = { vertical: 'center', horizontal: 'center' };
             worksheet.getCell('D2').font = { bold: true };
-            worksheet.getCell('E2').value = 'Alamat';
+            worksheet.getCell('E2').value = 'Latlong';
             worksheet.getCell('E2').alignment = { vertical: 'center', horizontal: 'center' };
             worksheet.getCell('E2').font = { bold: true };
-
-            worksheet.getCell('F2').value = 'Waktu';
+            worksheet.getCell('F2').value = 'Alamat';
             worksheet.getCell('F2').alignment = { vertical: 'center', horizontal: 'center' };
             worksheet.getCell('F2').font = { bold: true };
-            worksheet.getCell('G2').value = 'Latlong';
+
+            worksheet.getCell('G2').value = 'Tanggal';
             worksheet.getCell('G2').alignment = { vertical: 'center', horizontal: 'center' };
             worksheet.getCell('G2').font = { bold: true };
-            worksheet.getCell('H2').value = 'Alamat';
+            worksheet.getCell('H2').value = 'Latlong';
             worksheet.getCell('H2').alignment = { vertical: 'center', horizontal: 'center' };
             worksheet.getCell('H2').font = { bold: true };
+            worksheet.getCell('I2').value = 'Alamat';
+            worksheet.getCell('I2').alignment = { vertical: 'center', horizontal: 'center' };
+            worksheet.getCell('I2').font = { bold: true };
             
 
             worksheet.getRow(2).commit(); // now rows 1 and two are committed.
@@ -195,6 +208,7 @@ const app = new Vue({
                     worksheet.addRow([
                         item.nip,
                         item.nama,
+                        item.groupname,
                         // Date.parse(item.datang.waktu),
                         item.datang.waktu,
                         item.datang.latlong,
@@ -209,6 +223,7 @@ const app = new Vue({
                     worksheet.addRow([
                         item.nip,
                         item.nama,
+                        item.groupname,
                         item.datang.waktu,
                         item.datang.latlong,
                         item.datang.location
