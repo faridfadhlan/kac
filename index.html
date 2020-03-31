@@ -87,7 +87,7 @@
                 <h1>Kaizala Attendance Converter</h1>
                 <p class="lead text-muted">Masukkan file attendance berformat csv dan klik tombol Convert!</p>
                 <p>
-                    <input type="file" class="tes" name="myfile" @change="handleFile($event)" />
+                    <input type="file" class="tes" accept=".csv" name="myfile" @change="handleFile($event)" />
                     <a href="#" class="btn btn-primary my-2" @click="convert">Convert</a>
                 </p>
             </div>

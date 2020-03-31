@@ -46,11 +46,18 @@ const app = new Vue({
             app.file = e.target.files[0];
         },
         convert: () => {
+            if(app.file == null) return Swal.fire('Error', 'File belum dipilih', 'error');
             Papa.parse(app.file, {
                 header: true,
+                error: (err) => {
+                    if(err) {
+                        return Swal.fire('Error', err.toString(), 'error')
+                    }
+                },
                 complete: (results, f) => {
                     app.inputKaizala = results.data;
                     app.addUnixTime();
+                    // return;
                     app.sortAbsen();
                     app.processConvert();
                     // app.writeExcel()
@@ -62,7 +69,7 @@ const app = new Vue({
                 return a["Responder Name"] != "";
             })
             app.inputKaizala = app.inputKaizala.map(d => {
-                d.unixservertime = moment(d['Server Receipt Timestamp (UTC)']).add(app.timezone, 'h').unix();
+                d.unixservertime = moment(d['Server Receipt Timestamp (UTC)'], 'YYYY-MM-DD HH:mm:ss A').unix();
                 return d;
             })
         },
@@ -75,7 +82,7 @@ const app = new Vue({
                 const absens = {
                     nama: k,
                     datang: unik[k][0],
-                    pulang: unik[k].length > 1 ? unik[k][1] : false
+                    pulang: unik[k].length > 1 ? unik[k][unik[k].lenth-1] : false
                 }
                 return absens;
             });
@@ -86,8 +93,9 @@ const app = new Vue({
                 const pecahnama = apo.nama.split('-');
                 data.nama = pecahnama[0].trim();
                 data.nip = pecahnama[1].trim();
+                // console.log(moment.unix(apo.datang.unixservertime).format('YYYY-MM-DD HH:mm:ss'))
                 data.datang = {
-                    waktu: apo.datang.unixservertime,
+                    waktu: moment.unix(apo.datang.unixservertime).add(14, 'h').toDate(),
                     latitude: apo.datang['Responder Location Latitude'],
                     longitude: apo.datang['Responder Location Longitude'],
                     location: apo.datang['Responder Location Location'],
@@ -95,7 +103,7 @@ const app = new Vue({
                 };
                 if(apo.pulang) {
                     data.pulang = {
-                        waktu: apo.pulang.unixservertime,
+                        waktu: moment.unix(apo.pulang.unixservertime).add(14, 'h').toDate(),
                         latitude: apo.pulang['Responder Location Latitude'],
                         longitude: apo.pulang['Responder Location Longitude'],
                         latlong: apo.pulang['Responder Location Latitude'] + ', ' + apo.pulang['Responder Location Longitude'],
@@ -182,13 +190,17 @@ const app = new Vue({
             for(i in app.absens) {
                 const item = app.absens[i];
                 if(item.pulang) {
+                    // const ff = new Date(item.datang.waktu * 1000);
+                    // console.log(ff)
                     worksheet.addRow([
                         item.nip,
                         item.nama,
-                        new Date(item.datang.waktu * 1000),
+                        // Date.parse(item.datang.waktu),
+                        item.datang.waktu,
                         item.datang.latlong,
                         item.datang.location,
-                        new Date(item.pulang.waktu * 1000),
+                        // Date.parse(item.pulang.waktu),
+                        item.pulang.waktu,
                         item.pulang.latlong,
                         item.pulang.location
                     ]);
@@ -197,7 +209,7 @@ const app = new Vue({
                     worksheet.addRow([
                         item.nip,
                         item.nama,
-                        new Date(item.datang.waktu * 1000),
+                        item.datang.waktu,
                         item.datang.latlong,
                         item.datang.location
                     ]);
