@@ -47,7 +47,7 @@ const app = new Vue({
         },
         convert: () => {
             if(app.file == null) return Swal.fire('Error', 'File belum dipilih', 'error');
-            if(app.timezone == "") return Swal.fire('Error', 'Timezone belum dipilih', 'error');
+            if(app.timezone == "" || app.timezone == null) return Swal.fire('Error', 'Timezone belum dipilih', 'error');
             Papa.parse(app.file, {
                 header: true,
                 error: (err) => {
