@@ -79,16 +79,18 @@ const app = new Vue({
         },
         processConvert: () => {
             const unik = _.groupBy(app.inputKaizala, 'Responder Name');
+            console.log(unik)
             const absen_per_orang = Object.keys(unik).map(k => {
-                // console.log(unik[k][0])
                 const absens = {
                     nama: k,
                     groupname: unik[k][0]['Group Name'],
                     datang: unik[k][0],
-                    pulang: unik[k].length > 1 ? unik[k][unik[k].lenth-1] : false
+                    pulang: unik[k].length > 1 ? unik[k][unik[k].length-1] : null
                 }
                 return absens;
             });
+
+            console.log(absen_per_orang)
 
             
             app.absens = absen_per_orang.map(apo => {
@@ -118,9 +120,9 @@ const app = new Vue({
                     }
                 }
                 else {
-                    data.pulang = false
+                    data.pulang = null
                 }
-                
+                // console.log()
                 
                 return data;
             })
@@ -138,12 +140,13 @@ const app = new Vue({
 
             worksheet.getColumn(1).width = 15;
             worksheet.getColumn(2).width = 30;
-            worksheet.getColumn(3).width = 20;
-            worksheet.getColumn(4).width = 25;
-            worksheet.getColumn(5).width = 40;
-            worksheet.getColumn(6).width = 20;
-            worksheet.getColumn(7).width = 25;
-            worksheet.getColumn(8).width = 40;
+            worksheet.getColumn(3).width = 45;
+            worksheet.getColumn(4).width = 20;
+            worksheet.getColumn(5).width = 25;
+            worksheet.getColumn(6).width = 40;
+            worksheet.getColumn(7).width = 20;
+            worksheet.getColumn(8).width = 25;
+            worksheet.getColumn(9).width = 40;
 
             // kolom NIP
             worksheet.mergeCells('A1:A2');
@@ -202,24 +205,22 @@ const app = new Vue({
 
             for(i in app.absens) {
                 const item = app.absens[i];
+                console.log(item)
                 if(item.pulang) {
-                    // const ff = new Date(item.datang.waktu * 1000);
-                    // console.log(ff)
                     worksheet.addRow([
                         item.nip,
                         item.nama,
                         item.groupname,
-                        // Date.parse(item.datang.waktu),
                         item.datang.waktu,
                         item.datang.latlong,
                         item.datang.location,
-                        // Date.parse(item.pulang.waktu),
                         item.pulang.waktu,
                         item.pulang.latlong,
                         item.pulang.location
                     ]);
                 }
                 else {
+                    // console.log('ddd')
                     worksheet.addRow([
                         item.nip,
                         item.nama,
