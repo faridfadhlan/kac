@@ -148,10 +148,22 @@ const app = new Vue({
             worksheet.getColumn(8).width = 25;
             worksheet.getColumn(9).width = 40;
 
+            worksheet.columns = [
+                { key: 'nip', width: 15 },
+                { key: 'name', width: 30 },
+                { key: 'groupname', width: 45 },
+                { key: 'datang_tanggal', width: 20, style: { numFmt: 'yyyy-mm-dd hh:mm:ss' } },
+                { key: 'datang_latlong', width: 25 },
+                { key: 'datang_location', width: 40 },
+                { key: 'pulang_tanggal', width: 20, style: { numFmt: 'yyyy-mm-dd hh:mm:ss' } },
+                { key: 'pulang_latlong', width: 25 },
+                { key: 'pulang_location', width: 40 },
+
+            ];
+
             // kolom NIP
             worksheet.mergeCells('A1:A2');
             worksheet.getCell('A1').value = 'NIP';
-            worksheet.getCell('A1').width = 15;
             worksheet.getCell('A1').alignment = { vertical: 'center', horizontal: 'center' };
             worksheet.getCell('A1').font = { bold: true };
 
@@ -206,28 +218,28 @@ const app = new Vue({
             for(i in app.absens) {
                 const item = app.absens[i];
                 if(item.pulang) {
-                    worksheet.addRow([
-                        item.nip,
-                        item.nama,
-                        item.groupname,
-                        item.datang.waktu,
-                        item.datang.latlong,
-                        item.datang.location,
-                        item.pulang.waktu,
-                        item.pulang.latlong,
-                        item.pulang.location
-                    ]);
+                    worksheet.addRow({
+                        nip: item.nip,
+                        name: item.nama,
+                        groupname: item.groupname,
+                        datang_tanggal: item.datang.waktu,
+                        datang_latlong: item.datang.latlong,
+                        datang_location: item.datang.location,
+                        pulang_tanggal: item.pulang.waktu,
+                        pulang_latlong: item.pulang.latlong,
+                        pulang_location: item.pulang.location
+                    });
                 }
                 else {
                     // console.log('ddd')
-                    worksheet.addRow([
-                        item.nip,
-                        item.nama,
-                        item.groupname,
-                        item.datang.waktu,
-                        item.datang.latlong,
-                        item.datang.location
-                    ]);
+                    worksheet.addRow({
+                        nip: item.nip,
+                        name: item.nama,
+                        groupname: item.groupname,
+                        datang_tanggal: item.datang.waktu,
+                        datang_latlong: item.datang.latlong,
+                        datang_location: item.datang.location,
+                    });
                 }
                 
                 worksheet.getRow(i+3).commit();
